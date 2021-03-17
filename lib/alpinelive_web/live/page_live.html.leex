@@ -1,0 +1,16 @@
+<section x-data="{m: 1}" class="phx-hero">
+  <div id="alpine outer counter">
+    <span>alpine outer</span>
+    <button type="button" @click="m++" x-text="m"></button>
+  </div>
+  <div x-data="{n: 1}">
+    <div id="alpine counter">
+      <span>alpine inner</span>
+      <button type="button" @click="n++" x-text="n"></button>
+    </div>
+  </div>
+  <div id="live-view">
+    <span>live view counter</span>
+    <button type="button" phx-click="inc"><%= @n %></button>
+  </div>
+</section>
