@@ -19,12 +19,29 @@ import { LiveSocket } from "phoenix_live_view"
 
 import "alpinejs"
 
+function cloneChildren(fromChildren, to) {
+	for (let i = 0; i < fromChildren.length; i++) {
+		const fromChild = fromChildren[i];
+		cloneChildren(fromChild.children, to);
+
+		if (fromChild.__x && fromChild.id) {
+			const toChild = to.querySelector(`#${fromChild.id}`);
+			if (toChild && !toChild.__x) {
+				window.Alpine.clone(fromChild.__x, toChild);
+			}
+		}
+	}
+}
+
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
 let liveSocket = new LiveSocket("/live", Socket, {
 	dom: {
 		onBeforeElUpdated(from, to) {
-			if (from.__x) { window.Alpine.clone(from.__x, to) }
-		}
+			if (from.__x && !to.__x) {
+				cloneChildren(from.children, to);
+				window.Alpine.clone(from.__x, to);
+			}
+		},
 	},
 	params: { _csrf_token: csrfToken }
 })
